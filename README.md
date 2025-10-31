@@ -2,6 +2,21 @@
 
 A GitHub Action that runs commands in a gVisor sandbox.
 
+```yaml
+- uses: geomys/sandboxed-step@v1.2.0
+  with:
+    run: |
+      go get -u -t ./...
+      go test ./...
+```
+
+<p align="center">
+    <a href="https://geomys.org"><picture>
+        <source srcset="https://github.com/user-attachments/assets/4992f2dd-af1e-439c-81b3-13bd33afec7c" media="(prefers-color-scheme: dark)">
+        <img src="https://github.com/user-attachments/assets/5ea7a611-648c-40b0-87f9-44ce2e6bd6c4" alt="The Geomys logo, an ink outline of a quaint Italian town on the side of a mountain." width=250 height=225>
+    </picture></a>
+</p>
+
 ## Motivation
 
 Surprisingly enough, GitHub Actions with read-only permissions still receive a
@@ -24,14 +39,6 @@ CI against the latest versions of dependencies without risking being affected by
 supply chain attacks.
 
 ## Usage
-
-```yaml
-- uses: geomys/sandboxed-step@v1.2.0
-  with:
-    run: |
-      go get -u -t ./...
-      go test ./...
-```
 
 The commands run in a gVisor sandbox with
 
