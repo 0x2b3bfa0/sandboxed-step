@@ -102,12 +102,13 @@ runs:
         fi
 
         # Create the user script inside the rootfs
-        sudo tee "$SANDBOX_DIR/rootfs/entrypoint.sh" > /dev/null << 'SANDBOXED_SCRIPT_EOF'
+        sudo tee "$SANDBOX_DIR/rootfs/entrypoint.sh" > /dev/null << SANDBOXED_SCRIPT_EOF
         #!/bin/bash
         set -euo pipefail  # Exit on any error, undefined variable, or pipe failure
-        cd "$GITHUB_WORKSPACE"
+        cd "\$GITHUB_WORKSPACE"
+        $INPUTS_RUN
         SANDBOXED_SCRIPT_EOF
-        printenv INPUTS_RUN | sudo tee -a "$SANDBOX_DIR/rootfs/entrypoint.sh" > /dev/null
+
         sudo chmod +x "$SANDBOX_DIR/rootfs/entrypoint.sh"
 
         # Generate OCI config using the pre-built binary
