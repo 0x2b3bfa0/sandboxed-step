@@ -41,11 +41,7 @@ runs:
         INPUTS_ENV: ${{ inputs.env }}
         INPUTS_PERSIST_WORKSPACE_CHANGES: ${{ inputs.persist-workspace-changes }}
         INPUTS_ROOTFS_IMAGE: ${{ inputs.rootfs-image }}
-        INPUTS_RUN: |
-          #!/bin/bash
-          set -euo pipefail  # Exit on any error, undefined variable, or pipe failure
-          cd "$GITHUB_WORKSPACE"
-          ${{ inputs.run }}
+        INPUTS_RUN: ${{ inputs.run }}
       run: |
         # Set up and run the gVisor sandbox
 
@@ -106,7 +102,12 @@ runs:
         fi
 
         # Create the user script inside the rootfs
-        printenv INPUTS_RUN | sudo tee "$SANDBOX_DIR/rootfs/entrypoint.sh" > /dev/null
+        sudo tee "$SANDBOX_DIR/rootfs/entrypoint.sh" > /dev/null << 'SANDBOXED_SCRIPT_EOF'
+        #!/bin/bash
+        set -euo pipefail  # Exit on any error, undefined variable, or pipe failure
+        cd "$GITHUB_WORKSPACE"
+        SANDBOXED_SCRIPT_EOF
+        printenv INPUTS_RUN | sudo tee -a "$SANDBOX_DIR/rootfs/entrypoint.sh" > /dev/null
         sudo chmod +x "$SANDBOX_DIR/rootfs/entrypoint.sh"
 
         # Generate OCI config using the pre-built binary
